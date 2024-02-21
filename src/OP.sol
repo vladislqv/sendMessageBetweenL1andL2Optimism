@@ -28,19 +28,19 @@ contract Greeter {
 
     function set(address sender, string calldata greeting) external {
         require(msg.sender == MESSENGER, "Greeter: only messenger");
-        require(ICrossDomainMessenger(MESSENGER).xDomainMessageSender() == remote_greeter, "Greeter: only remote greeter");
+        require(
+            ICrossDomainMessenger(MESSENGER).xDomainMessageSender() ==
+                remote_greeter,
+            "Greeter: only remote greeter"
+        );
         greetings[sender] = greeting;
     }
 
     function send(string calldata greeting) external {
         ICrossDomainMessenger(MESSENGER).sendMessage({
             target: remote_greeter,
-            message: abi.encodeCall(
-                this.set,
-                (msg.sender, greeting)
-            ),
+            message: abi.encodeCall(this.set, (msg.sender, greeting)),
             gasLimit: 200000
         });
     }
-
 }
